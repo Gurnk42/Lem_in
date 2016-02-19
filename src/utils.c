@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 19:25:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/19 22:48:12 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/19 23:01:40 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ char	**ft_split_join_free(char **split, char *str)
 	i = 0;
 	ret = NULL;
 	len = ft_split_len(split);
-	ft_printf("LEN : '%d'\n", len);
 	if ((ret = (char **)malloc(sizeof(char *) * (len + 2))) == NULL)
 		ft_error_exit("Cannot allocate memory in ft_split_join_free().\n");
 	while (split[i] != NULL)

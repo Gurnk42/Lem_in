@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/19 22:48:51 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/19 23:01:32 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,12 @@ static void	ft_link_rooms(char *line, t_list **lst)
 	{
 		if (ft_strcmp(((t_room *)(tmp->content))->name, split[0]) == 0)
 		{
-			((t_room *)(tmp->content))->tunnels = ft_split_join_free(split, split[1]);
+			((t_room *)(tmp->content))->tunnels = ft_split_join_free(((t_room *)(tmp->content))->tunnels, ft_strdup(split[1]));
 			count++;
 		}
 		else if (ft_strcmp(((t_room *)(tmp->content))->name, split[1]) == 0)
 		{
-			((t_room *)(tmp->content))->tunnels = ft_split_join_free(split, split[0]);
+			((t_room *)(tmp->content))->tunnels = ft_split_join_free(((t_room *)(tmp->content))->tunnels, ft_strdup(split[0]));
 			count++;
 		}
 		tmp = tmp->next;
@@ -78,7 +78,9 @@ static void	ft_get_rooms(int *start_end, char *line, t_list **lst, t_env *e)
 	tmp->pos.x = ft_atoi_error_exit(split[1], "INT OVERFLOW. Exit.\n");
 	tmp->pos.x = ft_atoi_error_exit(split[2], "INT OVERFLOW. Exit.\n");
 	tmp->ants_there = 0;
-	tmp->tunnels = NULL;
+	if ((tmp->tunnels = (char **)malloc(sizeof(char *))) == NULL)
+		ft_error_exit("Cannot allocate tunnels string.\n");
+		tmp->tunnels[0] = NULL;
 	if (*start_end == 1 || *start_end == -1)
 	{
 		tmp->start_end = *start_end;
