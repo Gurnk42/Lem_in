@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/19 22:33:09 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/19 22:48:51 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ static void	ft_link_rooms(char *line, t_list **lst)
 	begin = *lst;
 	tmp = *lst;
 	split = ft_strsplit(line, '-'); // Free dat shit later
+	if (ft_strcmp(split[0], split[1]) == 0)
+		ft_error_exit("Room is linked to itself.\n");
 	if (ft_split_len(split) > 2)
 		ft_error_exit("Bad format for room links.\n");
 	while (tmp != NULL)
