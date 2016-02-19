@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 19:25:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/19 23:01:40 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/19 23:10:56 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,20 @@ int		ft_split_len(char **split)
 	while (split[i] != NULL)
 		i++;
 	return (i);
+}
+
+int		ft_is_in_split(char **split, char *str)
+{
+	int	i;
+
+	i = 0;
+	while (split[i] != NULL)
+	{
+		if (ft_strcmp(split[i], str) == 0)
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 char	**ft_split_join_free(char **split, char *str)

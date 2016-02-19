@@ -6,11 +6,15 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/19 23:01:32 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/19 23:14:08 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
+
+static void	ft_print_all_paths(t_list **lst)
+{
+}
 
 static void	ft_print_list_content(t_list *lst)
 {
