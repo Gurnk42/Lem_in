@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:45 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/19 20:06:00 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/19 21:59:36 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct		s_room
 	t_coords		pos;
 	int				ants_there;
 	int				start_end;
-	struct s_room	**tunnels;
+	char			**tunnels;
 }					t_room;
 
 typedef struct		s_env
@@ -37,5 +37,7 @@ typedef struct		s_env
 }					t_env;
 
 void				ft_error_exit(const char *error);
+int					ft_split_len(char **split);
+char				**ft_split_join_free(char **split, char *str);
 
 #endif

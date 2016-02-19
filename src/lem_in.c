@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/19 20:53:32 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/19 22:33:09 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,52 @@
 
 static void	ft_print_list_content(t_list *lst)
 {
+	int	i;
+
 	while (lst != NULL)
 	{
+		i = 0;
 		ft_printf("\n\nROOM : '%s'\n", ((t_room *)(lst->content))->name);
 		(((t_room *)(lst->content))->start_end == -1) ? ft_printf("END\n") : 0;
 		(((t_room *)(lst->content))->start_end == 1) ? ft_printf("START\n") : 0;
+		while (((t_room *)(lst->content))->tunnels[i] != NULL)
+		{
+			ft_printf("LINK[%d] : '%s'\n", i, ((t_room *)(lst->content))->tunnels[i]);
+			i++;
+		}
 		lst = lst->next;
 	}
+}
+
+static void	ft_link_rooms(char *line, t_list **lst)
+{
+	t_list	*begin;
+	t_list	*tmp;
+	char	**split;
+	int		count;
+
+	count = 0;
+	begin = *lst;
+	tmp = *lst;
+	split = ft_strsplit(line, '-'); // Free dat shit later
+	if (ft_split_len(split) > 2)
+		ft_error_exit("Bad format for room links.\n");
+	while (tmp != NULL)
+	{
+		if (ft_strcmp(((t_room *)(tmp->content))->name, split[0]) == 0)
+		{
+			((t_room *)(tmp->content))->tunnels = ft_split_join_free(split, split[1]);
+			count++;
+		}
+		else if (ft_strcmp(((t_room *)(tmp->content))->name, split[1]) == 0)
+		{
+			((t_room *)(tmp->content))->tunnels = ft_split_join_free(split, split[0]);
+			count++;
+		}
+		tmp = tmp->next;
+	}
+	if (count != 2)
+		ft_error_exit("Bad room name in room links.\n");
 }
 
 static void	ft_get_rooms(int *start_end, char *line, t_list **lst, t_env *e)
@@ -70,7 +109,12 @@ static void	ft_parse(t_list **lst, t_env *e)
 			if (i == 0)
 				e->ants_nb = ft_atoi(line);
 			else
-				ft_get_rooms(&start_end, line, lst, e);
+			{
+				if (ft_strchr(line, ' ') != NULL)
+					ft_get_rooms(&start_end, line, lst, e);
+				else
+					ft_link_rooms(line, lst);
+			}
 			i++;
 		}
 	}
