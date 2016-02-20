@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/20 20:02:16 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/21 00:41:44 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,10 @@ static int	ft_get_tunnel(t_list *tunnels, t_list **lst, t_list **next_rooms, cha
 						path_tmp->name = tmp2->content;
 						path_tmp->previous = ((t_path *)(tunnels->content));
 						ft_lstadd(next_rooms,
-								ft_lstnew((void *)path_tmp, sizeof(t_room *)));
+								ft_lstnew((void *)path_tmp, sizeof(t_path)));
 						ft_printf("ROOM NAME : '%s'\n", (char *)tmp2->content);
 						ft_printf("PREVIOUS : '%s'\n", ((t_path *)(path_tmp->previous))->name);
-						ft_printf("2nd PREVIOUS : '%s'\n",
+						ft_printf("2nd PREVIOUS : '%p'\n",
 							(t_path *)((t_path *)(path_tmp->previous))->previous);
 					}
 					tmp2 = tmp2->next;
@@ -113,14 +113,10 @@ static int	ft_get_shortest_path_len(t_list *node, t_list **lst, t_env *e)
 	{
 		if ((path_tmp = (t_path *)malloc(sizeof(t_path))) == NULL)
 			ft_error_exit("Cannot allocate memory for path_tmp.\n");
-			ft_printf("ADDED : '%s'\n", (char *)tmp->content);
-			path_tmp->name = tmp->content;
-			path_tmp->got_prev = 100000000;
-			path_tmp->previous = malloc(sizeof(t_path *));
-			ft_printf("ADDRESS : '%p'\n", path_tmp->previous);
-			ft_printf("NAME ADDRESS : '%p'\n", path_tmp->name);
+		path_tmp->name = (char *)tmp->content;
+		path_tmp->previous = NULL;
 		ft_lstadd(&next_rooms,
-				ft_lstnew((void *)path_tmp, sizeof(t_room *)));
+				ft_lstnew((void *)path_tmp, sizeof(t_path)));
 		tmp = tmp->next;
 	}
 
@@ -129,10 +125,8 @@ static int	ft_get_shortest_path_len(t_list *node, t_list **lst, t_env *e)
 		tmp = next_rooms;
 		while (tmp != NULL)
 		{
-			ft_printf("NAME ADRESS 2: '%p'\n",  ((t_path *)(tmp->content))->name);
 			ft_printf("ROOM NAME : '%s'\n", ((t_path *)(tmp->content))->name);
-			ft_printf("ADDRESS 2: '%p'\n", ((t_path *)(tmp->content))->previous);
-			ft_printf("GOT PREVIOUS : '%d'\n", ((t_path *)(tmp->content))->got_prev);
+			ft_printf("PREVIOUS : '%p'\n", ((t_path *)(tmp->content))->previous);
 			tmp = tmp->next;
 		}
 		ft_printf("___________________\n\n");

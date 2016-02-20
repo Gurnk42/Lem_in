@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:45 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/20 19:58:18 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/21 00:38:10 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ typedef struct		s_room
 typedef struct		s_path
 {
 	char			*name;
-	int				got_prev;
 	struct s_path	*previous;
 }					t_path;
 
