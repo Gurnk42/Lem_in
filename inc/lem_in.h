@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:45 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/20 13:36:22 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/20 15:38:35 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "libft.h"
 # define ERROR_DESC 1
-# define DEBUG 0
+# define DEBUG 1
 # define START 1
 # define END -1
 

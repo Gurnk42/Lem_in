@@ -6,16 +6,16 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/20 13:52:46 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/20 16:55:16 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
 /*static t_list	*ft_get_nodes_at_next_dist(t_list *node_at_this_dist)
-{
-	
-}*/
+  {
+
+  }*/
 
 static t_list	*ft_search_for_node(char *name, t_list **lst)
 {
@@ -31,9 +31,10 @@ static t_list	*ft_search_for_node(char *name, t_list **lst)
 	return (NULL);
 }
 
-static t_list	*ft_get_tunnel(t_list *tunnels, t_list **lst)
+static int	ft_get_tunnel(t_list *tunnels, t_list **lst, t_list **next_rooms, char *name)
 {
 	t_list	*tmp;
+	t_list	*tmp2;
 	int		i;
 	int		checked;
 
@@ -47,101 +48,95 @@ static t_list	*ft_get_tunnel(t_list *tunnels, t_list **lst)
 			{
 				((t_room *)(tmp->content))->checked = 1;
 				checked++;
-				return (tmp);
-				//if (((t_room *)(tmp->content))->start_end == START)
-				//	return (1);
+				if (((t_room *)(tmp->content))->start_end == START)
+					return (1);
+				// ADD NEXT DISTANCE TUNNELS TO NEXT_ROOMS_2
+				tmp2 = ((t_room *)(tmp->content))->tunnels;
+				while (tmp2 != NULL)
+				{
+					if (ft_strcmp((char *)tmp2->content, name) != 0)
+					{
+						ft_lstadd(next_rooms,
+								ft_lstnew((void *)tmp2->content, sizeof(t_room *)));
+						
+						ft_printf("ROOM NAME : '%s'\n", (char *)tmp2->content);
+					}
+					tmp2 = tmp2->next;
+				}
+				///////////////////////////////////////////
 			}
 		}
 		tunnels = tunnels->next;
 	}
-	//if (checked > 0)
-	//	return (0);
-	//return (-1);
-	return (NULL);
+	tmp2 = *next_rooms;
+	while (tmp2 != NULL)
+	{
+		ft_printf("NEXT ROOM NAME : '%s'\n", (char *)tmp2->content);
+		tmp2 = tmp2->next;
+	}
+	ft_printf("__________________________\n\n");
+	if (checked > 0) // SHOULD SWITCH NEXT_ROOMS AND NEXT_ROOMS_2 and free NEXT_ROOMS_2
+		return (0);
+	return (-1);
 }
-
-/*static void	ft_get_all_paths(t_list *node, t_list **lst, t_env *e)
-{
-	t_list	*path;
-	t_list	*tmp;
-	t_list	*first_node;
-	int		ret;
-
-	(void)e;
-	first_node = node;
-	path = NULL;
-	ft_lstadd(&path, ft_lstnew((void *)((t_room *)(node->content))->name, sizeof(char *)));
-	while (((t_room *)(node->content))->start_end != 1) // IF BEGIN IS FOUND
-	{
-		*//*if ((ret = ft_get_tunnel(((t_room *)(node->content))->tunnels, lst)) == 1)
-		{
-			ft_error_exit("We found the shortest path !!!\n");
-		}
-		else if ret == 
-			tmp = path;
-			path = path->next;
-			free(((void *)(tmp->content)));
-			tmp->content = NULL;
-			ft_memdel((void **)&tmp);
-			tmp = path;
-			if (DEBUG == 1)
-			{
-				while (tmp != NULL)
-				{
-					ft_printf("PATH : '%s'\n", (char *)tmp->content);
-					tmp = tmp->next;
-				}
-				ft_printf("BACK TO:  '%s'\n", (char *)path->content);
-			}
-			node = ft_search_for_node((char *)path->content, lst);
-		}
-		else
-			ft_lstadd(&path, ft_lstnew((void *)((t_room *)(node->content))->name, sizeof(char *)));
-	}
-	*//*
-	while (path != NULL)
-	{
-		ft_printf("PATH : '%s'\n", (char *)path->content);
-		path = path->next;
-	}
-}*/
 
 static void	ft_get_all_paths(t_list *node, t_list **lst, t_env *e)
 {
 	t_list	*path;
 	t_list	*tmp;
 	t_list	*first_node;
+	t_list	*next_rooms;
+	t_list	*next_rooms_2;
+	int		ret;
+	char	*current;
 
 	(void)e;
 	first_node = node;
 	path = NULL;
+	next_rooms = NULL;
+	next_rooms_2 = NULL;
 	ft_lstadd(&path, ft_lstnew((void *)((t_room *)(node->content))->name, sizeof(char *)));
-	while (((t_room *)(node->content))->start_end != 1) // IF BEGIN IS FOUND
+	tmp = ((t_room *)(node->content))->tunnels;
+	while (tmp != NULL)
 	{
-		if ((node = ft_get_tunnel(((t_room *)(node->content))->tunnels, lst)) == NULL)
+		ft_lstadd(&next_rooms,
+				ft_lstnew((void *)tmp->content, sizeof(t_room *)));
+		tmp = tmp->next;
+	}
+
+	if (DEBUG == 1)
+	{
+		tmp = next_rooms;
+		while (tmp != NULL)
 		{
-			tmp = path;
-			path = path->next;
-			free(((void *)(tmp->content)));
-			tmp->content = NULL;
-			ft_memdel((void **)&tmp);
-			tmp = path;
-			while (tmp != NULL)
-			{
-				ft_printf("PATH : '%s'\n", (char *)tmp->content);
-				tmp = tmp->next;
-			}
-			ft_printf("BACK TO:  '%s'\n", (char *)path->content);
-			node = ft_search_for_node((char *)path->content, lst);
+			ft_printf("ROOM NAME : '%s'\n", (char *)tmp->content);
+			tmp = tmp->next;
 		}
-		else
-			ft_lstadd(&path, ft_lstnew((void *)((t_room *)(node->content))->name, sizeof(char *)));
+		ft_printf("___________________\n\n");
 	}
-	while (path != NULL)
+	current = (char *)((t_room *)(node->content))->name;
+	int i = 1;
+	while ((ret = ft_get_tunnel(next_rooms, lst, &next_rooms_2, current)) != 1)
 	{
-		ft_printf("PATH : '%s'\n", (char *)path->content);
-		path = path->next;
+		if (ret == 0)
+		{
+			ft_lstadd(&next_rooms, ft_lstnew((void *)
+						((t_room *)(node->content))->name, sizeof(char *)));
+			next_rooms = next_rooms_2;
+		}
+		else if (ret == -1)
+			ft_error_exit("There's no path to the end.\n");
+		i++;
 	}
+	ft_printf("LEN OF SHORTEST PATH : '%d'\n", i);
+	//else
+	//	ft_lstadd(&path, ft_lstnew((void *)((t_room *)(node->content))->name, sizeof(char *)));
+	//}
+while (path != NULL)
+{
+	ft_printf("PATH : '%s'\n", (char *)path->content);
+	path = path->next;
+}
 }
 
 static void	ft_print_all_paths(t_list **lst, t_env *e)
@@ -151,7 +146,7 @@ static void	ft_print_all_paths(t_list **lst, t_env *e)
 	tmp	= *lst;
 	while (tmp != NULL)
 	{
-		if (((t_room *)(tmp->content))->start_end == -1) // START FROM THE END
+		if (((t_room *)(tmp->content))->start_end == END) // START FROM THE END
 		{
 			((t_room *)(tmp->content))->checked = 1;
 			ft_get_all_paths(tmp, lst, e);
@@ -174,8 +169,7 @@ static void	ft_print_list_content(t_list *lst)
 		tmp = ((t_room *)(lst->content))->tunnels;
 		while (tmp != NULL)
 		{
-			ft_printf("LINK[%d] : '%s'\n", i,
-				(char *)(((t_room *)(lst->content))->tunnels)->content);
+			ft_printf("LINK[%d] : '%s'\n", i, (char *)tmp->content);
 			tmp = tmp->next;
 			i++;
 		}
