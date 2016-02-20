@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/21 00:41:44 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/21 00:51:48 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,12 @@ static int	ft_get_tunnel(t_list *tunnels, t_list **lst, t_list **next_rooms, cha
 				checked++;
 				if (((t_room *)(tmp->content))->start_end == END)
 				{
-					/*path_tmp = (t_path *)(tunnels->content);
+					path_tmp = (t_path *)(tunnels->content);
 					while (path_tmp != NULL)
 					{
 						ft_printf("PATH : '%s'\n", path_tmp->name);
 						path_tmp = path_tmp->previous;
-					}*/
+					}
 					return (1);
 				}
 				// ADD NEXT DISTANCE TUNNELS TO NEXT_ROOMS_2
@@ -66,10 +66,6 @@ static int	ft_get_tunnel(t_list *tunnels, t_list **lst, t_list **next_rooms, cha
 						path_tmp->previous = ((t_path *)(tunnels->content));
 						ft_lstadd(next_rooms,
 								ft_lstnew((void *)path_tmp, sizeof(t_path)));
-						ft_printf("ROOM NAME : '%s'\n", (char *)tmp2->content);
-						ft_printf("PREVIOUS : '%s'\n", ((t_path *)(path_tmp->previous))->name);
-						ft_printf("2nd PREVIOUS : '%p'\n",
-							(t_path *)((t_path *)(path_tmp->previous))->previous);
 					}
 					tmp2 = tmp2->next;
 				}
@@ -78,12 +74,6 @@ static int	ft_get_tunnel(t_list *tunnels, t_list **lst, t_list **next_rooms, cha
 		}
 		tunnels = tunnels->next;
 	}
-	/*tmp2 = *next_rooms;
-	while (tmp2 != NULL)
-	{
-		ft_printf("NEXT ROOM NAME : '%s'\n", (char *)tmp2->content);
-		tmp2 = tmp2->next;
-	}*/
 	ft_printf("__________________________\n\n");
 	if (checked > 0) // SHOULD SWITCH NEXT_ROOMS AND NEXT_ROOMS_2 and free NEXT_ROOMS_2
 		return (0);
@@ -118,18 +108,6 @@ static int	ft_get_shortest_path_len(t_list *node, t_list **lst, t_env *e)
 		ft_lstadd(&next_rooms,
 				ft_lstnew((void *)path_tmp, sizeof(t_path)));
 		tmp = tmp->next;
-	}
-
-	if (DEBUG == 1)
-	{
-		tmp = next_rooms;
-		while (tmp != NULL)
-		{
-			ft_printf("ROOM NAME : '%s'\n", ((t_path *)(tmp->content))->name);
-			ft_printf("PREVIOUS : '%p'\n", ((t_path *)(tmp->content))->previous);
-			tmp = tmp->next;
-		}
-		ft_printf("___________________\n\n");
 	}
 	current = (char *)((t_room *)(node->content))->name;
 	while ((ret = ft_get_tunnel(next_rooms, lst, &next_rooms_2, current)) != 1)
@@ -213,13 +191,13 @@ static void	ft_link_rooms(char *line, t_list **lst)
 		if (ft_strcmp(((t_room *)(tmp->content))->name, split[0]) == 0)
 		{
 			ft_lstadd(&(((t_room *)(tmp->content))->tunnels),
-					ft_lstnew((void *)ft_strdup(split[1]), sizeof(char *)));
+					ft_lstnew((void *)ft_strdup(split[1]), ft_strlen(split[1])));
 			count++;
 		}
 		else if (ft_strcmp(((t_room *)(tmp->content))->name, split[1]) == 0)
 		{
 			ft_lstadd(&(((t_room *)(tmp->content))->tunnels),
-					ft_lstnew((void *)ft_strdup(split[0]), sizeof(char *)));
+					ft_lstnew((void *)ft_strdup(split[0]), ft_strlen(split[0])));
 			count++;
 		}
 		tmp = tmp->next;
