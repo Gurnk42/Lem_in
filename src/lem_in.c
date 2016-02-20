@@ -6,11 +6,16 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/20 03:37:40 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/20 13:52:46 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
+
+/*static t_list	*ft_get_nodes_at_next_dist(t_list *node_at_this_dist)
+{
+	
+}*/
 
 static t_list	*ft_search_for_node(char *name, t_list **lst)
 {
@@ -26,37 +31,80 @@ static t_list	*ft_search_for_node(char *name, t_list **lst)
 	return (NULL);
 }
 
-static t_list	*ft_get_tunnel(char **tunnels, t_list **lst)
+static t_list	*ft_get_tunnel(t_list *tunnels, t_list **lst)
 {
 	t_list	*tmp;
 	int		i;
-	int		len;
+	int		checked;
 
 	i = 0;
-	len = ft_split_len(tunnels);
-	if (DEBUG == 1)
-		ft_printf("LEN : '%d'\n", len);
-	while (i < len)
+	checked = 0;
+	while (tunnels != NULL)
 	{
-		if ((tmp = ft_search_for_node(tunnels[i], lst)) != NULL)//*lst;
-		//while (tmp != NULL)
+		if ((tmp = ft_search_for_node((char *)tunnels->content, lst)) != NULL)//*lst;
 		{
-		//	if (ft_strcmp(((t_room *)(tmp->content))->name, tunnels[i]) == 0)
-		//	{
-				if (((t_room *)(tmp->content))->checked == 0)
-				{
-					((t_room *)(tmp->content))->checked = 1;
-					return (tmp);
-				}
-			//	else
-			//		break ;
-			//}
-		//	tmp = tmp->next;
+			if (((t_room *)(tmp->content))->checked == 0)
+			{
+				((t_room *)(tmp->content))->checked = 1;
+				checked++;
+				return (tmp);
+				//if (((t_room *)(tmp->content))->start_end == START)
+				//	return (1);
+			}
 		}
-		i++;
+		tunnels = tunnels->next;
 	}
+	//if (checked > 0)
+	//	return (0);
+	//return (-1);
 	return (NULL);
 }
+
+/*static void	ft_get_all_paths(t_list *node, t_list **lst, t_env *e)
+{
+	t_list	*path;
+	t_list	*tmp;
+	t_list	*first_node;
+	int		ret;
+
+	(void)e;
+	first_node = node;
+	path = NULL;
+	ft_lstadd(&path, ft_lstnew((void *)((t_room *)(node->content))->name, sizeof(char *)));
+	while (((t_room *)(node->content))->start_end != 1) // IF BEGIN IS FOUND
+	{
+		*//*if ((ret = ft_get_tunnel(((t_room *)(node->content))->tunnels, lst)) == 1)
+		{
+			ft_error_exit("We found the shortest path !!!\n");
+		}
+		else if ret == 
+			tmp = path;
+			path = path->next;
+			free(((void *)(tmp->content)));
+			tmp->content = NULL;
+			ft_memdel((void **)&tmp);
+			tmp = path;
+			if (DEBUG == 1)
+			{
+				while (tmp != NULL)
+				{
+					ft_printf("PATH : '%s'\n", (char *)tmp->content);
+					tmp = tmp->next;
+				}
+				ft_printf("BACK TO:  '%s'\n", (char *)path->content);
+			}
+			node = ft_search_for_node((char *)path->content, lst);
+		}
+		else
+			ft_lstadd(&path, ft_lstnew((void *)((t_room *)(node->content))->name, sizeof(char *)));
+	}
+	*//*
+	while (path != NULL)
+	{
+		ft_printf("PATH : '%s'\n", (char *)path->content);
+		path = path->next;
+	}
+}*/
 
 static void	ft_get_all_paths(t_list *node, t_list **lst, t_env *e)
 {
@@ -99,7 +147,7 @@ static void	ft_get_all_paths(t_list *node, t_list **lst, t_env *e)
 static void	ft_print_all_paths(t_list **lst, t_env *e)
 {
 	t_list	*tmp;
-   
+
 	tmp	= *lst;
 	while (tmp != NULL)
 	{
@@ -114,7 +162,8 @@ static void	ft_print_all_paths(t_list **lst, t_env *e)
 
 static void	ft_print_list_content(t_list *lst)
 {
-	int	i;
+	int		i;
+	t_list	*tmp;
 
 	while (lst != NULL)
 	{
@@ -122,9 +171,12 @@ static void	ft_print_list_content(t_list *lst)
 		ft_printf("\n\nROOM : '%s'\n", ((t_room *)(lst->content))->name);
 		(((t_room *)(lst->content))->start_end == -1) ? ft_printf("END\n") : 0;
 		(((t_room *)(lst->content))->start_end == 1) ? ft_printf("START\n") : 0;
-		while (((t_room *)(lst->content))->tunnels[i] != NULL)
+		tmp = ((t_room *)(lst->content))->tunnels;
+		while (tmp != NULL)
 		{
-			ft_printf("LINK[%d] : '%s'\n", i, ((t_room *)(lst->content))->tunnels[i]);
+			ft_printf("LINK[%d] : '%s'\n", i,
+				(char *)(((t_room *)(lst->content))->tunnels)->content);
+			tmp = tmp->next;
 			i++;
 		}
 		lst = lst->next;
@@ -150,14 +202,18 @@ static void	ft_link_rooms(char *line, t_list **lst)
 	{
 		if (ft_strcmp(((t_room *)(tmp->content))->name, split[0]) == 0)
 		{
-			((t_room *)(tmp->content))->tunnels = ft_split_join_free(((t_room *)
-				(tmp->content))->tunnels, ft_strdup(split[1]));
+			//((t_room *)(tmp->content))->tunnels = ft_split_join_free(((t_room *)
+			//	(tmp->content))->tunnels, ft_strdup(split[1]));
+			ft_lstadd(&(((t_room *)(tmp->content))->tunnels),
+					ft_lstnew((void *)ft_strdup(split[1]), sizeof(char *)));
 			count++;
 		}
 		else if (ft_strcmp(((t_room *)(tmp->content))->name, split[1]) == 0)
 		{
-			((t_room *)(tmp->content))->tunnels = ft_split_join_free(((t_room *)
-				(tmp->content))->tunnels, ft_strdup(split[0]));
+			//((t_room *)(tmp->content))->tunnels = ft_split_join_free(((t_room *)
+			//	(tmp->content))->tunnels, ft_strdup(split[0]));
+			ft_lstadd(&(((t_room *)(tmp->content))->tunnels),
+					ft_lstnew((void *)ft_strdup(split[0]), sizeof(char *)));
 			count++;
 		}
 		tmp = tmp->next;
@@ -173,7 +229,7 @@ static void	ft_get_rooms(int *start_end, char *line, t_list **lst, t_env *e)
 {
 	t_room	*tmp;
 	char	**split;
-	
+
 	(void)e;
 	tmp = NULL;
 	split = ft_strsplit(line, ' '); // Free dat shit later
@@ -185,9 +241,10 @@ static void	ft_get_rooms(int *start_end, char *line, t_list **lst, t_env *e)
 	tmp->ants_there = 0;
 	tmp->checked = 0;
 	tmp->distance = -1;
-	if ((tmp->tunnels = (char **)malloc(sizeof(char *))) == NULL)
-		ft_error_exit("Cannot allocate tunnels string.\n");
-		tmp->tunnels[0] = NULL;
+	//if ((tmp->tunnels = (char **)malloc(sizeof(char *))) == NULL)
+	//	ft_error_exit("Cannot allocate tunnels string.\n");
+	//tmp->tunnels[0] = NULL;
+	tmp->tunnels = NULL;
 	if (*start_end == 1 || *start_end == -1)
 	{
 		(*start_end == 1) ? (e->start = ft_strdup(tmp->name)) : 

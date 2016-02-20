@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:45 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/20 03:16:55 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/20 13:36:22 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 
 # include "libft.h"
 # define ERROR_DESC 1
-# define DEBUG 1
+# define DEBUG 0
+# define START 1
+# define END -1
 
 typedef struct		s_coords
 {
@@ -30,7 +32,7 @@ typedef struct		s_room
 	t_coords		pos;
 	int				ants_there;
 	int				start_end;
-	char			**tunnels;
+	t_list			*tunnels;
 	int				checked;
 	int				distance;
 }					t_room;
