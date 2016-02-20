@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:45 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/20 15:38:35 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/20 18:20:46 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,12 @@ typedef struct		s_room
 	int				checked;
 	int				distance;
 }					t_room;
+
+typedef struct		s_path
+{
+	char			*name;
+	char			*previous;
+}					t_path;
 
 typedef struct		s_env
 {
