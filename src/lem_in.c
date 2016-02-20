@@ -6,11 +6,25 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/20 01:57:13 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/20 03:37:40 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
+
+static t_list	*ft_search_for_node(char *name, t_list **lst)
+{
+	t_list	*tmp;
+
+	tmp = *lst;
+	while (tmp != NULL)
+	{
+		if (ft_strcmp(((t_room *)(tmp->content))->name, name) == 0)
+			return (tmp);
+		tmp = tmp->next;
+	}
+	return (NULL);
+}
 
 static t_list	*ft_get_tunnel(char **tunnels, t_list **lst)
 {
@@ -20,23 +34,24 @@ static t_list	*ft_get_tunnel(char **tunnels, t_list **lst)
 
 	i = 0;
 	len = ft_split_len(tunnels);
-	ft_printf("LEN : '%d'\n", len);
+	if (DEBUG == 1)
+		ft_printf("LEN : '%d'\n", len);
 	while (i < len)
 	{
-		tmp = *lst;
-		while (tmp != NULL)
+		if ((tmp = ft_search_for_node(tunnels[i], lst)) != NULL)//*lst;
+		//while (tmp != NULL)
 		{
-			if (ft_strcmp(((t_room *)(tmp->content))->name, tunnels[i]) == 0)
-			{
+		//	if (ft_strcmp(((t_room *)(tmp->content))->name, tunnels[i]) == 0)
+		//	{
 				if (((t_room *)(tmp->content))->checked == 0)
 				{
 					((t_room *)(tmp->content))->checked = 1;
 					return (tmp);
 				}
-				else
-					break ;
-			}
-			tmp = tmp->next;
+			//	else
+			//		break ;
+			//}
+		//	tmp = tmp->next;
 		}
 		i++;
 	}
@@ -45,21 +60,39 @@ static t_list	*ft_get_tunnel(char **tunnels, t_list **lst)
 
 static void	ft_get_all_paths(t_list *node, t_list **lst, t_env *e)
 {
-	char **path;
+	t_list	*path;
+	t_list	*tmp;
+	t_list	*first_node;
 
 	(void)e;
-	if ((path = (char **)malloc(sizeof(char *))) == NULL)
-		ft_error_exit("Cannot allocate path in ft_get_all_paths().\n");
-	*path = NULL;
-	path = ft_split_join_free(path, ((t_room *)(node->content))->name);
-	
-	ft_printf("NODE NAME : '%s'\n", ((t_room *)(node->content))->name);
-	while (((t_room *)(node->content))->start_end != -1)
+	first_node = node;
+	path = NULL;
+	ft_lstadd(&path, ft_lstnew((void *)((t_room *)(node->content))->name, sizeof(char *)));
+	while (((t_room *)(node->content))->start_end != 1) // IF BEGIN IS FOUND
 	{
 		if ((node = ft_get_tunnel(((t_room *)(node->content))->tunnels, lst)) == NULL)
-			ft_error_exit("I'll think about that later.\n");
-		ft_printf("NODE NAME : '%s'\n", ((t_room *)(node->content))->name);
-		path = ft_split_join_free(path, ((t_room *)(node->content))->name);
+		{
+			tmp = path;
+			path = path->next;
+			free(((void *)(tmp->content)));
+			tmp->content = NULL;
+			ft_memdel((void **)&tmp);
+			tmp = path;
+			while (tmp != NULL)
+			{
+				ft_printf("PATH : '%s'\n", (char *)tmp->content);
+				tmp = tmp->next;
+			}
+			ft_printf("BACK TO:  '%s'\n", (char *)path->content);
+			node = ft_search_for_node((char *)path->content, lst);
+		}
+		else
+			ft_lstadd(&path, ft_lstnew((void *)((t_room *)(node->content))->name, sizeof(char *)));
+	}
+	while (path != NULL)
+	{
+		ft_printf("PATH : '%s'\n", (char *)path->content);
+		path = path->next;
 	}
 }
 
@@ -70,7 +103,7 @@ static void	ft_print_all_paths(t_list **lst, t_env *e)
 	tmp	= *lst;
 	while (tmp != NULL)
 	{
-		if (((t_room *)(tmp->content))->start_end == 1)
+		if (((t_room *)(tmp->content))->start_end == -1) // START FROM THE END
 		{
 			((t_room *)(tmp->content))->checked = 1;
 			ft_get_all_paths(tmp, lst, e);
@@ -130,7 +163,10 @@ static void	ft_link_rooms(char *line, t_list **lst)
 		tmp = tmp->next;
 	}
 	if (count != 2)
+	{
+		ft_printf("LINE : '%s'\n", line);
 		ft_error_exit("Bad room name in room links.\n");
+	}
 }
 
 static void	ft_get_rooms(int *start_end, char *line, t_list **lst, t_env *e)
@@ -148,6 +184,7 @@ static void	ft_get_rooms(int *start_end, char *line, t_list **lst, t_env *e)
 	tmp->pos.x = ft_atoi_error_exit(split[2], "INT OVERFLOW. Exit.\n");
 	tmp->ants_there = 0;
 	tmp->checked = 0;
+	tmp->distance = -1;
 	if ((tmp->tunnels = (char **)malloc(sizeof(char *))) == NULL)
 		ft_error_exit("Cannot allocate tunnels string.\n");
 		tmp->tunnels[0] = NULL;
@@ -207,7 +244,8 @@ int main(int argc, char **argv)
 		return (0); //Should print error there.
 	lst = NULL;
 	ft_parse(&lst, &env);
-	ft_print_list_content(lst);
+	if (DEBUG == 1)
+		ft_print_list_content(lst);
 	ft_print_all_paths(&lst, &env);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 19:25:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/19 23:10:56 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/20 02:27:58 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,13 @@ char	**ft_split_join_free(char **split, char *str)
 
 void	ft_error_exit(const char *error)
 {
-	ft_putstr_fd("\033[31m", 2);
-	ft_putstr_fd(error, 2);
-	ft_putstr_fd("\033[0m", 2);
+	if (ERROR_DESC == 1)
+	{
+		ft_putstr_fd("\033[31m", 2);
+		ft_putstr_fd(error, 2);
+		ft_putstr_fd("\033[0m", 2);
+	}
+	else
+		ft_putstr_fd("ERROR", 1);
 	exit(-1);
 }

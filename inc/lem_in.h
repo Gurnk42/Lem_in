@@ -6,14 +6,16 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:45 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/20 01:25:24 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/20 03:16:55 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEM_IN_H
 # define LEM_IN_H
 
-#include "libft.h"
+# include "libft.h"
+# define ERROR_DESC 1
+# define DEBUG 1
 
 typedef struct		s_coords
 {
@@ -30,6 +32,7 @@ typedef struct		s_room
 	int				start_end;
 	char			**tunnels;
 	int				checked;
+	int				distance;
 }					t_room;
 
 typedef struct		s_env
