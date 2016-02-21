@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/21 00:51:48 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/21 17:38:24 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ static t_list	*ft_search_for_node(char *name, t_list **lst)
 	return (NULL);
 }
 
-static int	ft_get_tunnel(t_list *tunnels, t_list **lst, t_list **next_rooms, char *name)
+static int	ft_get_tunnel(t_list *tunnels, t_list **next_rooms,
+		char *name, t_env *e)
 {
 	t_list	*tmp;
 	t_list	*tmp2;
@@ -38,7 +39,8 @@ static int	ft_get_tunnel(t_list *tunnels, t_list **lst, t_list **next_rooms, cha
 	checked = 0;
 	while (tunnels != NULL)
 	{
-		if ((tmp = ft_search_for_node(((t_path *)(tunnels->content))->name, lst)) != NULL)//*lst;
+		if ((tmp = ft_search_for_node(((t_path *)(tunnels->content))->name,
+				e->lst)) != NULL)
 		{
 			if (((t_room *)(tmp->content))->checked == 0)
 			{
@@ -49,12 +51,14 @@ static int	ft_get_tunnel(t_list *tunnels, t_list **lst, t_list **next_rooms, cha
 					path_tmp = (t_path *)(tunnels->content);
 					while (path_tmp != NULL)
 					{
-						ft_printf("PATH : '%s'\n", path_tmp->name);
+						ft_lstadd(&(e->shortest_path),
+							ft_lstnew((void *)path_tmp, sizeof(t_path)));
 						path_tmp = path_tmp->previous;
 					}
+				/*ft_lstadd(&(e->shortest_path),
+					ft_lstnew((void *)e->start, sizeof(char *)));*/
 					return (1);
 				}
-				// ADD NEXT DISTANCE TUNNELS TO NEXT_ROOMS_2
 				tmp2 = ((t_room *)(tmp->content))->tunnels;
 				while (tmp2 != NULL)
 				{
@@ -69,35 +73,28 @@ static int	ft_get_tunnel(t_list *tunnels, t_list **lst, t_list **next_rooms, cha
 					}
 					tmp2 = tmp2->next;
 				}
-				///////////////////////////////////////////
 			}
 		}
 		tunnels = tunnels->next;
 	}
-	ft_printf("__________________________\n\n");
-	if (checked > 0) // SHOULD SWITCH NEXT_ROOMS AND NEXT_ROOMS_2 and free NEXT_ROOMS_2
+	if (checked > 0)
 		return (0);
 	return (-1);
 }
 
-static int	ft_get_shortest_path_len(t_list *node, t_list **lst, t_env *e)
+static int	ft_get_shortest_path_len(t_list *node, t_env *e)
 {
 	t_list	*tmp;
-	t_list	*first_node;
+	t_list	*tunnels;
 	t_list	*next_rooms;
-	t_list	*next_rooms_2;
-	t_list	*all_depths;
 	t_path	*path_tmp;
 	int		ret;
 	char	*current;
 	int i;
 	
 	i = 1;
-	(void)e;
-	first_node = node;
-	all_depths = NULL;
+	tunnels = NULL;
 	next_rooms = NULL;
-	next_rooms_2 = NULL;
 	tmp = ((t_room *)(node->content))->tunnels;
 	while (tmp != NULL)
 	{
@@ -105,44 +102,40 @@ static int	ft_get_shortest_path_len(t_list *node, t_list **lst, t_env *e)
 			ft_error_exit("Cannot allocate memory for path_tmp.\n");
 		path_tmp->name = (char *)tmp->content;
 		path_tmp->previous = NULL;
-		ft_lstadd(&next_rooms,
+		ft_lstadd(&tunnels,
 				ft_lstnew((void *)path_tmp, sizeof(t_path)));
 		tmp = tmp->next;
 	}
 	current = (char *)((t_room *)(node->content))->name;
-	while ((ret = ft_get_tunnel(next_rooms, lst, &next_rooms_2, current)) != 1)
+	while ((ret = ft_get_tunnel(tunnels, &next_rooms, current, e)) != 1)
 	{
 		if (ret == 0)
 		{
 			if ((path_tmp = (t_path *)malloc(sizeof(t_path))) == NULL)
 				ft_error_exit("Cannot allocate memory for path_tmp.\n");
 			path_tmp->name = ((t_room *)(node->content))->name;
-			ft_lstadd(&next_rooms, ft_lstnew((void *)
-						path_tmp, sizeof(char *)));
-			ft_lstadd(&all_depths, ft_lstnew((void *)
-						next_rooms, sizeof(char *)));
-			next_rooms = next_rooms_2;
+			ft_lstadd(&tunnels, ft_lstnew((void *)
+						path_tmp, sizeof(t_path)));
+			tunnels = next_rooms;
 		}
 		else if (ret == -1)
 			ft_error_exit("There's no path to the end.\n");
 		i++;
 	}
-	ft_printf("LEN OF SHORTEST PATH : '%d'\n", i);
 	return (i);
 }
 
-static void	ft_print_all_paths(t_list **lst, t_env *e)
+static void	ft_print_all_paths(t_env *e)
 {
 	t_list	*tmp;
-	int	len;
 
-	tmp	= *lst;
+	tmp	= *(e->lst);
 	while (tmp != NULL)
 	{
-		if (((t_room *)(tmp->content))->start_end == START) // START FROM THE END
+		if (((t_room *)(tmp->content))->start_end == START)
 		{
 			((t_room *)(tmp->content))->checked = 1;
-			len = ft_get_shortest_path_len(tmp, lst, e);
+			e->len = ft_get_shortest_path_len(tmp, e);
 			break ;
 		}
 		tmp = tmp->next;
@@ -191,13 +184,13 @@ static void	ft_link_rooms(char *line, t_list **lst)
 		if (ft_strcmp(((t_room *)(tmp->content))->name, split[0]) == 0)
 		{
 			ft_lstadd(&(((t_room *)(tmp->content))->tunnels),
-					ft_lstnew((void *)ft_strdup(split[1]), ft_strlen(split[1])));
+					ft_lstnew((void *)ft_strdup(split[1]), sizeof(char *)));
 			count++;
 		}
 		else if (ft_strcmp(((t_room *)(tmp->content))->name, split[1]) == 0)
 		{
 			ft_lstadd(&(((t_room *)(tmp->content))->tunnels),
-					ft_lstnew((void *)ft_strdup(split[0]), ft_strlen(split[0])));
+					ft_lstnew((void *)ft_strdup(split[0]), sizeof(char *)));
 			count++;
 		}
 		tmp = tmp->next;
@@ -209,7 +202,19 @@ static void	ft_link_rooms(char *line, t_list **lst)
 	}
 }
 
-static void	ft_get_rooms(int *start_end, char *line, t_list **lst, t_env *e)
+static void	ft_free_split(char **split)
+{
+	int	i;
+
+	i = 0;
+	while (split[i] != NULL)
+	{
+		ft_strdel(split + i);
+		i++;
+	}
+}
+
+static void	ft_get_rooms(int *start_end, char *line, t_env *e)
 {
 	t_room	*tmp;
 	char	**split;
@@ -222,9 +227,7 @@ static void	ft_get_rooms(int *start_end, char *line, t_list **lst, t_env *e)
 	tmp->name = ft_strdup(split[0]);
 	tmp->pos.x = ft_atoi_error_exit(split[1], "INT OVERFLOW. Exit.\n");
 	tmp->pos.x = ft_atoi_error_exit(split[2], "INT OVERFLOW. Exit.\n");
-	tmp->ants_there = 0;
 	tmp->checked = 0;
-	tmp->distance = -1;
 	tmp->tunnels = NULL;
 	if (*start_end == 1 || *start_end == -1)
 	{
@@ -233,10 +236,11 @@ static void	ft_get_rooms(int *start_end, char *line, t_list **lst, t_env *e)
 		tmp->start_end = *start_end;
 		*start_end = 0;
 	}
-	ft_lstadd(lst, ft_lstnew((void *)tmp, sizeof(t_room)));
+	ft_free_split(split);
+	ft_lstadd(e->lst, ft_lstnew((void *)tmp, sizeof(t_room)));
 }
 
-static void	ft_parse(t_list **lst, t_env *e)
+static void	ft_parse(t_env *e)
 {
 	char	*line;
 	int		i;
@@ -262,28 +266,88 @@ static void	ft_parse(t_list **lst, t_env *e)
 			else
 			{
 				if (ft_strchr(line, ' ') != NULL)
-					ft_get_rooms(&start_end, line, lst, e);
+					ft_get_rooms(&start_end, line, e);
 				else
-					ft_link_rooms(line, lst);
+					ft_link_rooms(line, e->lst);
 			}
 			i++;
 		}
+		ft_strdel(&line);
+	}
+}
+
+static void	ft_free_tunnels(t_list *lst)
+{
+	t_list	*tmp;
+	t_list	*tmp2;
+
+	tmp = lst;
+	while (tmp != NULL)
+	{
+		tmp2 = tmp;
+		tmp = tmp->next;
+		ft_strdel(((char **)&(tmp2->content)));
+		free(tmp2);
+		tmp2 = NULL;
+	}
+}
+
+static void	ft_free_main_list(t_list **lst)
+{
+	t_list	*tmp;
+	t_list	*tmp2;
+
+	tmp = *lst;
+	while (tmp != NULL)
+	{
+		tmp2 = tmp;
+		tmp = tmp->next;
+		ft_strdel(&(((t_room *)(tmp2->content))->name));
+		ft_free_tunnels(((t_room *)(tmp2->content))->tunnels);
+		ft_memdel((void **)&(tmp2->content));
+		free(tmp2);
+		tmp2 = NULL;
+	}
+}
+
+static void	ft_print_ants(t_env *e)
+{
+	int	i;
+	int	n;
+	t_list *tmp;
+
+	i = 0;
+	//ft_printf("LEN : '%d'\n", e->len);
+	while (i < e->ants_nb)
+	{
+		tmp = e->shortest_path;
+		n = 0;
+		while (tmp != NULL && n <= i)
+		{
+			//while (n < i + 1)
+			ft_printf("L%d-%s ", /*n++ +*/ 1, ((t_path *)(tmp->content))->name);
+			tmp = tmp->next; 
+		}
+		ft_printf("\n");
+		i++;
 	}
 }
 
 int main(int argc, char **argv)
 {
-	t_list	*lst;
 	t_env	env;
 
 	(void)argc;
 	(void)argv;
-	if ((lst = (t_list *)malloc(sizeof(t_list))) == NULL)
+	if ((env.lst = (t_list **)malloc(sizeof(t_list *))) == NULL)
 		return (0); //Should print error there.
-	lst = NULL;
-	ft_parse(&lst, &env);
+	*(env.lst) = NULL;
+	env.shortest_path = NULL;
+	ft_parse(&env);
 	if (DEBUG == 1)
-		ft_print_list_content(lst);
-	ft_print_all_paths(&lst, &env);
+		ft_print_list_content((*(env.lst)));
+	ft_print_all_paths(&env);
+	ft_free_main_list(env.lst);
+	ft_print_ants(&env);
 	return (0);
 }

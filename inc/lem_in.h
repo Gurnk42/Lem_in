@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:45 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/21 00:38:10 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/21 17:38:24 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,15 @@ typedef struct		s_room
 {
 	char			*name;
 	t_coords		pos;
-	int				ants_there;
 	int				start_end;
 	t_list			*tunnels;
 	int				checked;
-	int				distance;
 }					t_room;
 
 typedef struct		s_path
 {
 	char			*name;
+	int				ant;
 	struct s_path	*previous;
 }					t_path;
 
@@ -48,7 +47,9 @@ typedef struct		s_env
 	int				ants_nb;
 	char			*start;
 	char			*end;
-	t_list			**shortest_path;
+	t_list			*shortest_path;
+	int				len;
+	t_list			**lst;
 }					t_env;
 
 void				ft_error_exit(const char *error);
