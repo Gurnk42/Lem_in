@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/22 02:00:37 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/22 03:23:17 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,8 @@ static int	ft_get_tunnel(t_list *tunnels, t_list **next_rooms,
 	t_list	*tmp;
 	t_list	*tmp2;
 	t_path	*path_tmp;
-	int		i;
 	int		checked;
 
-	i = 0;
 	checked = 0;
 	while (tunnels != NULL)
 	{
@@ -55,8 +53,6 @@ static int	ft_get_tunnel(t_list *tunnels, t_list **next_rooms,
 							ft_lstnew((void *)path_tmp->name, sizeof(char *)));
 						path_tmp = path_tmp->previous;
 					}
-				/*ft_lstadd(&(e->shortest_path),
-					ft_lstnew((void *)e->start, sizeof(char *)));*/
 					return (1);
 				}
 				tmp2 = ((t_room *)(tmp->content))->tunnels;
@@ -329,18 +325,15 @@ static void	ft_print_ants(t_env *e)
 {
 	int		i;
 	int 	n;
-	int		*ants_pos;
+	int		ants_pos[e->ants_nb];
 	char	*name;
 
 	i = 0;
 	n = 0;
-	if ((ants_pos = (int *)malloc(sizeof(int) * (e->ants_nb))) == NULL)
-		ft_error_exit("Cannot allocate memory for ants_pos.\n");
 	while (i < (e->ants_nb))
 		ants_pos[i++] = n--;
-	while (1)
+	while ((i = 0) == 0)
 	{
-		i = 0;
 		while (i < e->ants_nb)
 		{
 			ants_pos[i]++;
@@ -364,7 +357,7 @@ int main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 	if ((env.lst = (t_list **)malloc(sizeof(t_list *))) == NULL)
-		return (0); //Should print error there.
+		ft_error_exit("Cannot allocate memory.\n");
 	*(env.lst) = NULL;
 	env.shortest_path = NULL;
 	ft_parse(&env);
@@ -372,6 +365,7 @@ int main(int argc, char **argv)
 		ft_print_list_content((*(env.lst)));
 	ft_print_all_paths(&env);
 	ft_free_main_list(env.lst);
+	ft_memdel((void **)&env.lst);
 	ft_print_ants(&env);
 	return (0);
 }
