@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:45 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/21 17:38:24 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/22 02:00:43 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 # define LEM_IN_H
 
 # include "libft.h"
-# define ERROR_DESC 1
-# define DEBUG 1
+# define ERROR_DESC 0
+# define DEBUG 0
 # define START 1
 # define END -1
 

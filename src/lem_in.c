@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/22 01:58:30 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/22 02:00:37 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -338,11 +338,8 @@ static void	ft_print_ants(t_env *e)
 		ft_error_exit("Cannot allocate memory for ants_pos.\n");
 	while (i < (e->ants_nb))
 		ants_pos[i++] = n--;
-	ft_printf("LEN : '%d'\n", (e->len + 1));
-	//ants_pos[0] = 1;
 	while (1)
 	{
-		sleep(1);
 		i = 0;
 		while (i < e->ants_nb)
 		{
@@ -356,7 +353,7 @@ static void	ft_print_ants(t_env *e)
 			}
 			i++;
 		}
-		ft_printf("\n");
+		ft_putchar('\n');
 	}
 }
 
