@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/21 17:38:24 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/22 01:58:30 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static int	ft_get_tunnel(t_list *tunnels, t_list **next_rooms,
 					while (path_tmp != NULL)
 					{
 						ft_lstadd(&(e->shortest_path),
-							ft_lstnew((void *)path_tmp, sizeof(t_path)));
+							ft_lstnew((void *)path_tmp->name, sizeof(char *)));
 						path_tmp = path_tmp->previous;
 					}
 				/*ft_lstadd(&(e->shortest_path),
@@ -310,26 +310,53 @@ static void	ft_free_main_list(t_list **lst)
 	}
 }
 
+static char	*ft_get_pos_name(t_list	*lst, int pos)
+{
+	int i;
+
+	i = 1;
+	while (lst != NULL)
+	{
+		if (i == pos)
+			return ((char *)lst->content);
+		lst = lst->next;
+		i++;
+	}
+	return (NULL);
+}
+
 static void	ft_print_ants(t_env *e)
 {
-	int	i;
-	int	n;
-	t_list *tmp;
+	int		i;
+	int 	n;
+	int		*ants_pos;
+	char	*name;
 
 	i = 0;
-	//ft_printf("LEN : '%d'\n", e->len);
-	while (i < e->ants_nb)
+	n = 0;
+	if ((ants_pos = (int *)malloc(sizeof(int) * (e->ants_nb))) == NULL)
+		ft_error_exit("Cannot allocate memory for ants_pos.\n");
+	while (i < (e->ants_nb))
+		ants_pos[i++] = n--;
+	ft_printf("LEN : '%d'\n", (e->len + 1));
+	//ants_pos[0] = 1;
+	while (1)
 	{
-		tmp = e->shortest_path;
-		n = 0;
-		while (tmp != NULL && n <= i)
+		sleep(1);
+		i = 0;
+		while (i < e->ants_nb)
 		{
-			//while (n < i + 1)
-			ft_printf("L%d-%s ", /*n++ +*/ 1, ((t_path *)(tmp->content))->name);
-			tmp = tmp->next; 
+			ants_pos[i]++;
+			if (ants_pos[i] > 0)
+			{
+				if ((name = ft_get_pos_name(e->shortest_path, ants_pos[i])) != NULL)
+					ft_printf("L%d-%s ", i + 1, name);
+				else if (i + 1 == e->ants_nb)
+					return ;
+			}
+			i++;
 		}
 		ft_printf("\n");
-		i++;
 	}
 }
 
