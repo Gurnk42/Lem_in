@@ -28,6 +28,7 @@ SRC_FILES =	lem_in.c \
 			utils.c \
 			utils_2.c \
 			algo.c \
+			parser.c \
 			free.c
 
 OBJ_FILES = $(SRC_FILES:.c=.o)

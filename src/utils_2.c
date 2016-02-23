@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/23 11:33:24 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 11:38:15 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 12:23:18 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	ft_print_all_paths(t_env *e)
 {
 	t_list	*tmp;
 
-	tmp	= *(e->lst);
+	tmp = *(e->lst);
 	while (tmp != NULL)
 	{
 		if (((t_room *)(tmp->content))->start_end == START)

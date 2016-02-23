@@ -6,20 +6,21 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/23 11:32:51 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 12:10:17 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 12:22:39 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-static void ft_get_tunnel_core_2(t_list *tunnels, t_list *tmp, t_list **next_rooms, t_path *path_tmp, char *name)
+static void	ft_get_tunnel_core_2(t_list *tunnels,
+		t_list **next_rooms, t_path *path_tmp, t_get_tunnel *a)
 {
 	t_list	*tmp2;
 
-	tmp2 = ((t_room *)(tmp->content))->tunnels;
+	tmp2 = ((t_room *)(a->tmp->content))->tunnels;
 	while (tmp2 != NULL)
 	{
-		if (ft_strcmp((char *)tmp2->content, name) != 0)
+		if (ft_strcmp((char *)tmp2->content, a->name) != 0)
 		{
 			if ((path_tmp = (t_path *)malloc(sizeof(t_path))) == NULL)
 				ft_error_exit("Cannot allocate memory for path_tmp.\n");
@@ -32,7 +33,8 @@ static void ft_get_tunnel_core_2(t_list *tunnels, t_list *tmp, t_list **next_roo
 	}
 }
 
-static int ft_get_tunnel_core(t_list *tunnels, t_list *tmp, t_list **next_rooms, char *name, t_env *e)
+static int	ft_get_tunnel_core(t_list *tunnels, t_list *tmp,
+			t_list **next_rooms, t_get_tunnel *a)
 {
 	t_path	*path_tmp;
 
@@ -42,21 +44,23 @@ static int ft_get_tunnel_core(t_list *tunnels, t_list *tmp, t_list **next_rooms,
 		path_tmp = (t_path *)(tunnels->content);
 		while (path_tmp != NULL)
 		{
-			ft_lstadd(&(e->shortest_path),
+			ft_lstadd(&(a->e->shortest_path),
 				ft_lstnew((void *)path_tmp->name, sizeof(char *)));
 			path_tmp = path_tmp->previous;
 		}
 		return (1);
 	}
-	ft_get_tunnel_core_2(tunnels, tmp, next_rooms, path_tmp, name);
+	a->tmp = tmp;
+	ft_get_tunnel_core_2(tunnels, next_rooms, path_tmp, a);
 	return (0);
 }
 
-int	ft_get_tunnel(t_list *tunnels, t_list **next_rooms,
+int			ft_get_tunnel(t_list *tunnels, t_list **next_rooms,
 		char *name, t_env *e)
 {
-	t_list	*tmp;
-	int		checked;
+	t_list			*tmp;
+	int				checked;
+	t_get_tunnel	a;
 
 	checked = 0;
 	while (tunnels != NULL)
@@ -68,7 +72,9 @@ int	ft_get_tunnel(t_list *tunnels, t_list **next_rooms,
 			{
 				((t_room *)(tmp->content))->checked = 1;
 				checked++;
-				if (ft_get_tunnel_core(tunnels, tmp, next_rooms, name, e) == 1)
+				a.name = name;
+				a.e = e;
+				if (ft_get_tunnel_core(tunnels, tmp, next_rooms, &a) == 1)
 					return (1);
 			}
 		}
@@ -79,13 +85,13 @@ int	ft_get_tunnel(t_list *tunnels, t_list **next_rooms,
 	return (-1);
 }
 
-
-static int	ft_get_shortest_path_len_core(t_path *path_tmp, t_list *tunnels, t_list *node, t_env *e)
+static int	ft_get_shortest_path_len_core(t_path *path_tmp, t_list *tunnels,
+				t_list *node, t_env *e)
 {
 	char	*current;
 	t_list	*next_rooms;
 	int		ret;
-	int i;
+	int		i;
 
 	i = 1;
 	next_rooms = NULL;
@@ -108,7 +114,7 @@ static int	ft_get_shortest_path_len_core(t_path *path_tmp, t_list *tunnels, t_li
 	return (i);
 }
 
-int	ft_get_shortest_path_len(t_list *node, t_env *e)
+int			ft_get_shortest_path_len(t_list *node, t_env *e)
 {
 	t_list	*tmp;
 	t_list	*tunnels;
@@ -128,4 +134,3 @@ int	ft_get_shortest_path_len(t_list *node, t_env *e)
 	}
 	return (ft_get_shortest_path_len_core(path_tmp, tunnels, node, e));
 }
-

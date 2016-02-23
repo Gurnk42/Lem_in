@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:45 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 11:40:26 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 12:51:44 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ typedef struct		s_coords
 {
 	int				x;
 	int				y;
-
 }					t_coords;
 
 typedef struct		s_room
@@ -52,6 +51,13 @@ typedef struct		s_env
 	t_list			**lst;
 }					t_env;
 
+typedef struct		s_get_tunnel
+{
+	char			*name;
+	t_env			*e;
+	t_list			*tmp;
+}					t_get_tunnel;
+
 /*
 ** free.c
 */
@@ -76,5 +82,12 @@ int					ft_split_len(char **split);
 int					ft_get_tunnel(t_list *tunnels, t_list **next_rooms,
 						char *name, t_env *e);
 int					ft_get_shortest_path_len(t_list *node, t_env *e);
+
+/*
+** parser.c
+*/
+void				ft_link_rooms(char *line, t_list **lst);
+void				ft_parse(t_env *e);
+void				t_get_rooms(int *start_end, char *line, t_env *e);
 
 #endif
