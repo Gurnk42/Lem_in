@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:45 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 15:38:42 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 17:41:37 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define LEM_IN_H
 
 # include "libft.h"
-# define ERROR_DESC 0
+# define ERROR_DESC 1
 # define DEBUG 0
 # define START 1
 # define END -1
@@ -63,6 +63,7 @@ typedef struct		s_parse
 {
 	char			*line;
 	int				i;
+	int				iter;
 	int				s_e[2];
 	int				start_end;
 	int				ret;
@@ -103,10 +104,12 @@ int					ft_get_tunnel(t_list *tunnels, t_list **next_rooms,
 int					ft_get_shortest_path_len(t_list *node, t_env *e);
 
 /*
-** parser.c
+** parser.c / parser_2.c
 */
 void				ft_link_rooms(char *line, t_list **lst);
 void				ft_parse(t_env *e);
 void				t_get_rooms(int *start_end, char *line, t_env *e);
+void				ft_command_error(t_parse *p);
+void				ft_init_parse(t_parse *p);
 
 #endif
