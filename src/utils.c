@@ -6,11 +6,25 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 19:25:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 12:23:22 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 14:17:55 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
+
+int		ft_isnum(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (ft_isdigit(str[i]) == 0)
+			return (0);
+		i++;
+	}
+	return (1);
+}
 
 int		ft_split_len(char **split)
 {

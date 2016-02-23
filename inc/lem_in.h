@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:45 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 12:53:13 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 14:16:28 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,15 @@ typedef struct		s_env
 	t_list			**lst;
 }					t_env;
 
+typedef struct		s_parse
+{
+	char			*line;
+	int				i;
+	int				s_e[2];
+	int				start_end;
+	int				ret;
+}					t_parse;
+
 typedef struct		s_get_tunnel
 {
 	char			*name;
@@ -68,6 +77,7 @@ void				ft_free_split(char **split);
 /*
 ** utils.c / utils_2.c
 */
+int					ft_isnum(char *str);
 void				ft_error_exit(const char *error);
 t_list				*ft_search_for_node(char *name, t_list **lst);
 void				ft_print_all_paths(t_env *e);

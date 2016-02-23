@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/23 12:23:56 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 13:30:02 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 14:17:57 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,21 @@ void		ft_link_rooms(char *line, t_list **lst)
 	t_list	*begin;
 	t_list	*tmp;
 	char	**split;
+	int		i;
+	int		n;
 
+	i = 0;
+	n = 0;
 	begin = *lst;
 	tmp = *lst;
+	while (line[i])
+		if (line[i++] == '-')
+			n++;
+	if (n > 1)
+		ft_error_exit("Bad rooms link format.\n");
 	split = ft_strsplit(line, '-');
+	if (ft_split_len(split) != 2)
+		ft_error_exit("Bad room link format.\n");
 	if (ft_strcmp(split[0], split[1]) == 0)
 		ft_error_exit("Room is linked to itself.\n");
 	if (ft_split_len(split) > 2)
@@ -66,8 +77,10 @@ void		ft_get_rooms(int *start_end, char *line, t_env *e)
 	if ((tmp = (t_room *)malloc(sizeof(t_room))) == NULL)
 		ft_error_exit("Cannot allocate list content\n");
 	tmp->name = ft_strdup(split[0]);
+	if (ft_isnum(split[1]) == 0 || ft_isnum(split[2]) == 0)
+		ft_error_exit("Position should be numbers.\n");
 	tmp->pos.x = ft_atoi_error_exit(split[1], "ERROR");
-	tmp->pos.x = ft_atoi_error_exit(split[2], "ERROR");
+	tmp->pos.y = ft_atoi_error_exit(split[2], "ERROR");
 	tmp->checked = 0;
 	tmp->tunnels = NULL;
 	if (*start_end == 1 || *start_end == -1)
@@ -110,27 +123,26 @@ static void	ft_parse_core(char *line, int *start_end, int *i, t_env *e)
 
 void		ft_parse(t_env *e)
 {
-	char	*line;
-	int		i;
-	int		start_end;
-	int		ret;
+	t_parse p;
 
-	i = 0;
-	start_end = 0;
-	while ((ret = get_next_line(0, &line)) == 1)
+	p.i = 0;
+	p.start_end = 0;
+	p.s_e[0] = 0;
+	p.s_e[1] = 0;
+	while ((p.ret = get_next_line(0, &p.line)) == 1)
 	{
-		if (ft_strncmp(line, "##", 2) == 0)
+		if (ft_strncmp(p.line, "##", 2) == 0)
 		{
-			if (ft_strcmp(line, "##start") == 0)
-				start_end = 1;
-			else if (ft_strcmp(line, "##end") == 0)
-				start_end = -1;
+			if (ft_strcmp(p.line, "##start") == 0 && (p.start_end = 1) == 1)
+				p.s_e[0] = 1;
+			else if (ft_strcmp(p.line, "##end") == 0 && (p.start_end = -1) == -1)
+				p.s_e[1] = 1;
 			else
 				ft_error_exit("Bad line starting with \"##\"");
 		}
-		ft_parse_core(line, &start_end, &i, e);
-		ft_strdel(&line);
+		ft_parse_core(p.line, &p.start_end, &p.i, e);
+		ft_strdel(&p.line);
 	}
-	if (ret == -1 || i == 0)
+	if ((p.ret == -1) || (p.i == 0) || (p.s_e[0] == 0) || (p.s_e[1] == 0))
 		ft_error_exit("Bad input.\n");
 }
