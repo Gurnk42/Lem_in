@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:45 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 14:27:20 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 15:00:00 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,14 @@ typedef struct		s_env
 	int				len;
 	t_list			**lst;
 }					t_env;
+
+typedef struct		s_print
+{
+	int				i;
+	int				n;
+	int				*ants_pos;
+	char			*name;
+}					t_print;
 
 typedef struct		s_parse
 {

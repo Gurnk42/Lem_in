@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 14:52:20 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 15:00:15 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,34 +29,31 @@ static char	*ft_name(t_list *lst, int pos)
 
 static void	ft_print_ants(t_env *e)
 {
-	int		i;
-	int		n;
-	int		*ants_pos;
-	char	*name;
+	t_print p;
 
-	i = 0;
-	n = 0;
-	if ((ants_pos = (int *)malloc(sizeof(int) * e->ants_nb)) == NULL)
+	p.i = 0;
+	p.n = 0;
+	if ((p.ants_pos = (int *)malloc(sizeof(int) * e->ants_nb)) == NULL)
 		ft_error_exit("Cannot allocate memory.\n");
-	while (i < (e->ants_nb))
-		ants_pos[i++] = n--;
-	while ((i = 0) == 0)
+	while (p.i < (e->ants_nb))
+		p.ants_pos[p.i++] = p.n--;
+	while ((p.i = 0) == 0)
 	{
-		while (i < e->ants_nb)
+		while (p.i < e->ants_nb)
 		{
-			ants_pos[i]++;
-			if (ants_pos[i] > 0)
+			if (++(p.ants_pos[p.i]) > 0)
 			{
-				if ((name = ft_name(e->shortest_path, ants_pos[i])) != NULL)
-					ft_printf("L%d-%s ", i + 1, name);
-				else if (i + 1 == e->ants_nb)
+				if ((p.name = ft_name(e->shortest_path,
+						p.ants_pos[p.i])) != NULL)
+					ft_printf("L%d-%s ", p.i + 1, p.name);
+				else if (p.i + 1 == e->ants_nb)
 					return ;
 			}
-			i++;
+			p.i++;
 		}
 		ft_putchar('\n');
 	}
-	ft_memdel((void **)&ants_pos);
+	ft_memdel((void **)&p.ants_pos);
 }
 
 int			main(int argc, char **argv)

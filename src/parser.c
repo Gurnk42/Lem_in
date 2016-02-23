@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/23 12:23:56 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 14:42:54 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 14:54:43 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,7 @@ void		ft_get_rooms(int *start_end, char *line, t_env *e)
 
 	(void)e;
 	tmp = NULL;
-	split = ft_strsplit(line, ' ');
-	if (ft_split_len(split) != 3)
+	if (ft_split_len(split = ft_strsplit(line, ' ')) != 3)
 		ft_error_exit("Bad room format.\n");
 	if ((tmp = (t_room *)malloc(sizeof(t_room))) == NULL)
 		ft_error_exit("Cannot allocate list content\n");
@@ -129,7 +128,8 @@ void		ft_parse(t_env *e)
 		{
 			if (ft_strcmp(p.line, "##start") == 0 && (p.start_end = 1) == 1)
 				p.s_e[0] = 1;
-			else if (ft_strcmp(p.line, "##end") == 0 && (p.start_end = -1) == -1)
+			else if (ft_strcmp(p.line, "##end") == 0
+					&& (p.start_end = -1) == -1)
 				p.s_e[1] = 1;
 			else
 				ft_error_exit("Bad line starting with \"##\"");
