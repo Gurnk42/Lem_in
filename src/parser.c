@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/23 12:23:56 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 14:17:57 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 14:42:54 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,18 +96,12 @@ void		ft_get_rooms(int *start_end, char *line, t_env *e)
 
 static void	ft_parse_core(char *line, int *start_end, int *i, t_env *e)
 {
-	int	n;
-
 	if (*line != '#')
 	{
 		if (*i == 0)
 		{
-			n = 0;
-			if (*line == '\0')
+			if (ft_isnum(line) == 0 || *line == '\0')
 				ft_error_exit("Bad input format.\n");
-			while (line[n])
-				if (!ft_isdigit(line[n++]))
-					ft_error_exit("Bad input format.\n");
 			e->ants_nb = ft_atoi(line);
 		}
 		else

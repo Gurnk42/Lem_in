@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 13:55:26 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 14:52:20 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,13 @@ static void	ft_print_ants(t_env *e)
 {
 	int		i;
 	int		n;
-	int		ants_pos[e->ants_nb];
+	int		*ants_pos;
 	char	*name;
 
 	i = 0;
 	n = 0;
+	if ((ants_pos = (int *)malloc(sizeof(int) * e->ants_nb)) == NULL)
+		ft_error_exit("Cannot allocate memory.\n");
 	while (i < (e->ants_nb))
 		ants_pos[i++] = n--;
 	while ((i = 0) == 0)
@@ -54,6 +56,7 @@ static void	ft_print_ants(t_env *e)
 		}
 		ft_putchar('\n');
 	}
+	ft_memdel((void **)&ants_pos);
 }
 
 int			main(int argc, char **argv)
