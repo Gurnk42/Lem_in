@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 19:25:08 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/20 02:27:58 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 11:28:45 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ char	**ft_split_join_free(char **split, char *str)
 	}
 	ret[i] = ft_strdup(str);
 	ret[i + 1] = NULL;
-	//FREE SPLIT THERE !!!
 	return (ret);
 }
 

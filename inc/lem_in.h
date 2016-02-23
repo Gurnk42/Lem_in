@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:45 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/22 02:01:41 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 11:40:26 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,29 @@ typedef struct		s_env
 	t_list			**lst;
 }					t_env;
 
+/*
+** free.c
+*/
+void				ft_free_tunnels(t_list *lst);
+void				ft_free_main_list(t_list **lst);
+void				ft_free_split(char **split);
+
+/*
+** utils.c / utils_2.c
+*/
 void				ft_error_exit(const char *error);
-int					ft_split_len(char **split);
-char				**ft_split_join_free(char **split, char *str);
+t_list				*ft_search_for_node(char *name, t_list **lst);
+void				ft_print_all_paths(t_env *e);
+void				ft_print_list_content(t_list *lst);
 int					ft_is_in_split(char **split, char *str);
+char				**ft_split_join_free(char **split, char *str);
+int					ft_split_len(char **split);
+
+/*
+** algo.c
+*/
+int					ft_get_tunnel(t_list *tunnels, t_list **next_rooms,
+						char *name, t_env *e);
+int					ft_get_shortest_path_len(t_list *node, t_env *e);
 
 #endif
