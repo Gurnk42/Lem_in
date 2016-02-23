@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/23 12:23:56 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 13:19:30 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 13:30:02 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,13 @@ void		ft_get_rooms(int *start_end, char *line, t_env *e)
 	(void)e;
 	tmp = NULL;
 	split = ft_strsplit(line, ' ');
+	if (ft_split_len(split) != 3)
+		ft_error_exit("Bad room format.\n");
 	if ((tmp = (t_room *)malloc(sizeof(t_room))) == NULL)
 		ft_error_exit("Cannot allocate list content\n");
 	tmp->name = ft_strdup(split[0]);
-	tmp->pos.x = ft_atoi_error_exit(split[1], "INT OVERFLOW. Exit.\n");
-	tmp->pos.x = ft_atoi_error_exit(split[2], "INT OVERFLOW. Exit.\n");
+	tmp->pos.x = ft_atoi_error_exit(split[1], "ERROR");
+	tmp->pos.x = ft_atoi_error_exit(split[2], "ERROR");
 	tmp->checked = 0;
 	tmp->tunnels = NULL;
 	if (*start_end == 1 || *start_end == -1)
