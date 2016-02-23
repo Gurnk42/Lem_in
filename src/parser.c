@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/23 12:23:56 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 12:46:23 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 13:19:30 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,16 +79,30 @@ void		ft_get_rooms(int *start_end, char *line, t_env *e)
 	ft_lstadd(e->lst, ft_lstnew((void *)tmp, sizeof(t_room)));
 }
 
-static void	ft_parse_core(char *line, int *start_end)
+static void	ft_parse_core(char *line, int *start_end, int *i, t_env *e)
 {
-	if (ft_strncmp(line, "##", 2) == 0)
+	int	n;
+
+	if (*line != '#')
 	{
-		if (ft_strcmp(line, "##start") == 0)
-			*start_end = 1;
-		else if (ft_strcmp(line, "##end") == 0)
-			*start_end = -1;
+		if (*i == 0)
+		{
+			n = 0;
+			if (*line == '\0')
+				ft_error_exit("Bad input format.\n");
+			while (line[n])
+				if (!ft_isdigit(line[n++]))
+					ft_error_exit("Bad input format.\n");
+			e->ants_nb = ft_atoi(line);
+		}
 		else
-			ft_error_exit("Bad line starting with \"##\"");
+		{
+			if (ft_strchr(line, ' ') != NULL)
+				ft_get_rooms(start_end, line, e);
+			else
+				ft_link_rooms(line, e->lst);
+		}
+		(*i)++;
 	}
 }
 
@@ -97,25 +111,24 @@ void		ft_parse(t_env *e)
 	char	*line;
 	int		i;
 	int		start_end;
+	int		ret;
 
 	i = 0;
 	start_end = 0;
-	while (get_next_line(0, &line))
+	while ((ret = get_next_line(0, &line)) == 1)
 	{
-		ft_parse_core(line, &start_end);
-		if (*line != '#')
+		if (ft_strncmp(line, "##", 2) == 0)
 		{
-			if (i == 0)
-				e->ants_nb = ft_atoi(line);
+			if (ft_strcmp(line, "##start") == 0)
+				start_end = 1;
+			else if (ft_strcmp(line, "##end") == 0)
+				start_end = -1;
 			else
-			{
-				if (ft_strchr(line, ' ') != NULL)
-					ft_get_rooms(&start_end, line, e);
-				else
-					ft_link_rooms(line, e->lst);
-			}
-			i++;
+				ft_error_exit("Bad line starting with \"##\"");
 		}
+		ft_parse_core(line, &start_end, &i, e);
 		ft_strdel(&line);
 	}
+	if (ret == -1 || i == 0)
+		ft_error_exit("Bad input.\n");
 }
