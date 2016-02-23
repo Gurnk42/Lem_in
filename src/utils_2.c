@@ -6,11 +6,27 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/23 11:33:24 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 12:23:18 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 15:10:31 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
+
+int		ft_nb_of_occur(char *str, char c)
+{
+	int	i;
+	int	n;
+
+	i = 0;
+	n = 0;
+	while (str[i])
+	{
+		if (str[i] == c)
+			n++;
+		i++;
+	}
+	return (n);
+}
 
 t_list	*ft_search_for_node(char *name, t_list **lst)
 {

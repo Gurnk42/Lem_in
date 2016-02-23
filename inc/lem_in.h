@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 18:05:45 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 15:00:00 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 15:18:09 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ void				ft_print_list_content(t_list *lst);
 int					ft_is_in_split(char **split, char *str);
 char				**ft_split_join_free(char **split, char *str);
 int					ft_split_len(char **split);
+int					ft_nb_of_occur(char *str, char c);
 
 /*
 ** algo.c

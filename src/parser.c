@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/23 12:23:56 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 14:54:43 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 15:18:52 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,9 @@ void		ft_get_rooms(int *start_end, char *line, t_env *e)
 	t_room	*tmp;
 	char	**split;
 
-	(void)e;
-	tmp = NULL;
-	if (ft_split_len(split = ft_strsplit(line, ' ')) != 3)
+	split = NULL;
+	if (ft_nb_of_occur(line, ' ') != 2 ||
+		ft_split_len(split = ft_strsplit(line, ' ')) != 3)
 		ft_error_exit("Bad room format.\n");
 	if ((tmp = (t_room *)malloc(sizeof(t_room))) == NULL)
 		ft_error_exit("Cannot allocate list content\n");
