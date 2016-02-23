@@ -6,7 +6,7 @@
 /*   By: ebouther <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/23 12:23:56 by ebouther          #+#    #+#             */
-/*   Updated: 2016/02/23 15:18:52 by ebouther         ###   ########.fr       */
+/*   Updated: 2016/02/23 15:38:02 by ebouther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ void		ft_parse(t_env *e)
 			if (ft_strcmp(p.line, "##start") == 0 && (p.start_end = 1) == 1)
 				p.s_e[0] = 1;
 			else if (ft_strcmp(p.line, "##end") == 0
-					&& (p.start_end = -1) == -1)
+				&& (p.start_end = -1) == -1)
 				p.s_e[1] = 1;
 			else
 				ft_error_exit("Bad line starting with \"##\"");
